@@ -11,41 +11,47 @@ export class User {
   readonly _id?: string;
   readonly _doc?: any; //get from model object Mongoose
 
-  @ApiProperty({ example: 'abc@gmail.com', description: 'The email of user' })
   @Prop({ require: true })
   @IsNotEmpty()
   @IsEmail()
+  @ApiProperty({ example: 'abc@gmail.com', description: 'The email of user' })
   email: string;
 
-  @ApiProperty({ example: 'kennySang', description: 'The username of user' })
   @Prop({ require: true })
   @IsNotEmpty()
   @IsString()
+  @ApiProperty({ example: 'abc', description: 'The username of user' })
   username: string;
 
+  @Prop({ require: true })
+  @IsNotEmpty()
+  @IsString()
   @ApiProperty({
     example: '0986114478',
     description: 'The phone number of user',
   })
-  @Prop({ require: true })
-  @IsNotEmpty()
-  @IsString()
   phone: string;
 
   @Prop({ default: 0 })
   @IsNotEmpty()
   @IsNumber()
+  @ApiProperty({ example: 100, description: 'The balance of user' })
   balance: number;
 
-  @ApiProperty({ example: '123456', description: 'The password of user' })
   @Prop({ require: true })
   @IsNotEmpty()
+  @ApiProperty({ example: '123456', description: 'The password of user' })
   password: string;
 
   @Prop({ default: [Role.User] })
+  @ApiProperty({ example: ['user'], description: 'The role of user' })
   role: Role[];
 
   @Prop({ default: false })
+  @ApiProperty({
+    example: true,
+    description: 'The verification status of user',
+  })
   isVerified: boolean;
 
   @Prop({ default: null })

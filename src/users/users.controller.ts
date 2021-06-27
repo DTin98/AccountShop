@@ -16,6 +16,8 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MailerService } from '@nestjs-modules/mailer';
+import { User } from './schemas/user.schema';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
@@ -30,13 +32,21 @@ export class UsersController {
   }
 
   @Get('verify')
-  async verify(@Request() req, @Query('code', ParseIntPipe) code: number) {
+  @ApiResponse({
+    status: 200,
+    type: User,
+    description: 'Verify user',
+  })
+  async verify(
+    @Request() req,
+    @Query('code', ParseIntPipe) code: number,
+  ): Promise<User> {
     const user = await this.userService.findOne(req.user.username);
     if (!user) throw new BadRequestException('user is not found');
     if (!user.email) throw new BadRequestException('user have not email');
     if (user.isVerified) throw new BadRequestException('user is actived');
     if (code === user.verificationCode)
-      await this.userService.update(user._id, {
+      return this.userService.update(user._id, {
         isVerified: true,
         verificationCode: null,
       });
