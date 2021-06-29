@@ -1,5 +1,5 @@
 export const jwtConstants = {
-  secret: 'VErysEcreT@123',
+  SECRET: "VErysEcreT@123",
 };
 
-export const saltOrRoundsConstants = 12;
+export const SALT_OR_ROUNDS = 12;

@@ -4,10 +4,10 @@ import { LoginUserDto } from "./auth/dtos/login-user.dto";
 import { RegisterUserDto } from "./auth/dtos/register-user.dto";
 import { Public } from "./shared/decorators/public.decorator";
 import { Roles } from "./shared/decorators/role.decorator";
-import { Role } from "./users/enums/role.enum";
+import { Role } from "./user/enums/role.enum";
 import { ApiProperty, ApiResponse } from "@nestjs/swagger";
 import { LoginResponse } from "./auth/interfaces/login-response.interface";
-import { User } from "./users/schemas/user.schema";
+import { User } from "./user/schemas/user.schema";
 import { RegisterResponse } from "./auth/interfaces/register-response.interface";
 
 @Controller()
