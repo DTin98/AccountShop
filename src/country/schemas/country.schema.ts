@@ -1,0 +1,39 @@
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
+import * as mongoose from "mongoose";
+import {
+  IsNotEmpty,
+  IsEmail,
+  IsString,
+  IsNumber,
+  IsEnum,
+} from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { Exclude } from "class-transformer";
+import { Product } from "src/product/schemas/product.schema";
+
+export type CountryDocument = Country & Document;
+
+//"AU","CZ","EE","ES","FR","GB","IN","IT","KZ","LT","MY","PL","RU","TH","UA","US",
+@Schema()
+export class Country {
+  @Prop({ require: true })
+  countryCode: string;
+
+  @Prop({ require: true })
+  countryName: string;
+
+  @Prop({ default: 0 })
+  unitPrice: number;
+
+  @Prop()
+  image: string;
+
+  @Prop()
+  describe: string;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Product" })
+  product: Product[];
+}
+
+export const CountrySchema = SchemaFactory.createForClass(Country);

@@ -1,5 +1,6 @@
 export const PAGINATE_DEFAULT = {
-  LIMIT_LAUNCH: 5,
+  PAGE: 1,
+  PAGE_SIZE: 5,
 };
 
 export enum SORT_TYPE {

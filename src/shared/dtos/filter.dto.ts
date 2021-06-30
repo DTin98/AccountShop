@@ -3,14 +3,14 @@ import { Transform } from "class-transformer";
 import { IsEnum, IsOptional } from "class-validator";
 import { SORT_TYPE } from "src/shared/constants/pagination.constant";
 
-export class categoryFilterDto {
+export class FilterDto {
   @ApiPropertyOptional()
   @IsOptional()
   page: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  limit: string;
+  page_size: string;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -25,8 +25,4 @@ export class categoryFilterDto {
   @IsEnum(SORT_TYPE)
   @ApiPropertyOptional()
   sortOrder: SORT_TYPE;
-
-  @IsOptional()
-  @ApiPropertyOptional()
-  name: string;
 }

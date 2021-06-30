@@ -1,16 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { isEmpty } from "class-validator";
 import { Model } from "mongoose";
-import {
-  PAGINATE_DEFAULT,
-  SORT_TYPE,
-} from "src/shared/constants/pagination.constant";
-import { PaginateResult } from "src/shared/interfaces/paginate-result.interface";
-import { CreateCategoryDto } from "./dto/create-category.dto";
-import { categoryFilterDto } from "./dto/filter-category.dto";
-import { UpdateCategoryDto } from "./dto/update-category.dto";
-import { Category, CategoryDocument } from "./schema/category.schema";
+import { CreateCategoryDto } from "./dtos/create-category.dto";
+import { UpdateCategoryDto } from "./dtos/update-category.dto";
+import { Category, CategoryDocument } from "./schemas/category.schema";
 
 @Injectable()
 export class CategoryService {
@@ -18,35 +11,30 @@ export class CategoryService {
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>
   ) {}
 
-  //NOT YET INSERT OPTION FOR QUERIES
-  async findAll(filter: categoryFilterDto): Promise<PaginateResult<Category>> {
-    const limit = parseInt(filter.limit) || PAGINATE_DEFAULT.LIMIT_LAUNCH;
-    const page = parseInt(filter.page) || 1;
-    const skip = page * limit - limit;
+  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+    const isExistedCategory = await this.categoryModel.findOne({
+      name: createCategoryDto.name,
+    });
+    if (isExistedCategory)
+      throw new BadRequestException("category name is existed");
 
-    let categoryLst;
-    if (limit > 10)
-      categoryLst = await this.categoryModel
-        .find({})
-        .limit(limit)
-        .skip(limit * page)
-        .sort({
-          countryCode: "asc",
-        })
-        .exec();
-    else
-      categoryLst = await this.categoryModel
-        .find({})
-        .limit(limit)
-        .sort({
-          countryCode: "asc",
-        })
-        .exec();
+    const createdCategory = new this.categoryModel(createCategoryDto);
+    return createdCategory.save();
+  }
 
-    return {
-      data: categoryLst,
-      total: categoryLst.length,
-      page,
-    };
+  findAll(): Promise<Category[]> {
+    return this.categoryModel.find().exec();
+  }
+
+  findOne(id: string) {
+    return `This action returns a #${id} category`;
+  }
+
+  update(id: string, updateCategoryDto: UpdateCategoryDto) {
+    return `This action updates a #${id} category`;
+  }
+
+  remove(id: string) {
+    return `This action removes a #${id} category`;
   }
 }

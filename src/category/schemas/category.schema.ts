@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import * as mongoose from "mongoose";
 import { Document } from "mongoose";
 import {
   IsNotEmpty,
@@ -8,30 +9,17 @@ import {
   IsEnum,
 } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { Product } from "src/product/schemas/product.schema";
+import { Country } from "src/country/schemas/country.schema";
 
 export type CategoryDocument = Category & Document;
-
-//"AU","CZ","EE","ES","FR","GB","IN","IT","KZ","LT","MY","PL","RU","TH","UA","US",
 @Schema()
 export class Category {
   @Prop({ require: true })
-  @ApiProperty({
-    example: "abc@gmail.com",
-    description: "The email of Category",
-  })
-  countryCode: string;
+  name: string;
 
-  @Prop({ require: true })
-  countryName: string;
-
-  @Prop()
-  image: string;
-
-  @Prop()
-  describe: string;
-
-  @Prop({ default: 0 })
-  quantity: number;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Country" })
+  product: Product[];
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);

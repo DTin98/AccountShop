@@ -6,23 +6,40 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
 } from "@nestjs/common";
-import { PaginateResult } from "src/shared/interfaces/paginate-result.interface";
 import { CategoryService } from "./category.service";
-import { CreateCategoryDto } from "./dto/create-category.dto";
-import { categoryFilterDto } from "./dto/filter-category.dto";
-import { UpdateCategoryDto } from "./dto/update-category.dto";
-import { Category } from "./schema/category.schema";
+import { CreateCategoryDto } from "./dtos/create-category.dto";
+import { UpdateCategoryDto } from "./dtos/update-category.dto";
 
 @Controller("category")
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
+  @Post()
+  create(@Body() createCategoryDto: CreateCategoryDto) {
+    return this.categoryService.create(createCategoryDto);
+  }
+
   @Get()
-  findAll(
-    @Query() filter: categoryFilterDto
-  ): Promise<PaginateResult<Category>> {
-    return this.categoryService.findAll(filter);
+  findAll() {
+    return this.categoryService.findAll();
+  }
+
+  @Get(":id")
+  findOne(@Param("id") id: string) {
+    return this.categoryService.findOne(id);
+  }
+
+  @Patch(":id")
+  update(
+    @Param("id") id: string,
+    @Body() updateCategoryDto: UpdateCategoryDto
+  ) {
+    return this.categoryService.update(id, updateCategoryDto);
+  }
+
+  @Delete(":id")
+  remove(@Param("id") id: string) {
+    return this.categoryService.remove(id);
   }
 }
