@@ -1,6 +1,6 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { InjectModel, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import * as mongoose from "mongoose";
-import { Document } from "mongoose";
+import { Document, Model } from "mongoose";
 import {
   IsNotEmpty,
   IsEmail,
@@ -10,7 +10,8 @@ import {
 } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Product } from "src/product/schemas/product.schema";
-import { Country } from "src/country/schemas/country.schema";
+import { Country, CountryDocument } from "src/country/schemas/country.schema";
+import { CategoryCountry } from "src/country/schemas/category-country.schema";
 
 export type CategoryDocument = Category & Document;
 @Schema()
@@ -19,7 +20,7 @@ export class Category {
   name: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Country" })
-  product: Product[];
+  Country: Country[];
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);

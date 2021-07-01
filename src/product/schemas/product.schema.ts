@@ -20,9 +20,6 @@ export class Product {
   @Prop({ require: true })
   data: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Category" })
-  category: Category;
-
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Country" })
   country: Country;
 

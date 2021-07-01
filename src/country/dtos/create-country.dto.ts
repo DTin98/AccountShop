@@ -1,8 +1,10 @@
+import { Transform } from "class-transformer";
 import { IsString, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
 export class CreateCountryDto {
   @IsNotEmpty()
   @IsString()
+  @Transform((countryCode) => countryCode.value.toUpperCase())
   countryCode: string;
 
   @IsNotEmpty()
@@ -11,7 +13,7 @@ export class CreateCountryDto {
 
   @IsOptional()
   @IsNumber()
-  price: number;
+  unitPrice: number;
 
   @IsOptional()
   @IsString()

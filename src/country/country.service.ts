@@ -1,11 +1,16 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import * as mongoose from "mongoose";
 import { Model } from "mongoose";
 import { PaginateResult } from "src/shared/interfaces/paginate-result.interface";
 import { getFilterQueries } from "src/utils/getFilterQueries";
 import { CreateCountryDto } from "./dtos/create-country.dto";
 import { CountryFilterDto } from "./dtos/filter-country.dto";
 import { UpdateCountryDto } from "./dtos/update-country.dto";
+import {
+  CategoryCountry,
+  CategoryCountryDocument,
+} from "./schemas/category-country.schema";
 import { Country, CountryDocument } from "./schemas/country.schema";
 
 @Injectable()
@@ -30,6 +35,11 @@ export class CountryService {
 
     const countryLst = await this.countryModel
       .find()
+      .populate({
+        path: "category",
+        match: { _id: filter.category },
+        select: "name",
+      })
       .limit(pageSize)
       .skip(skip)
       .exec();
