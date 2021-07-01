@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
 } from "@nestjs/common";
+import { Public } from "src/shared/decorators/public.decorator";
 import { CategoryService } from "./category.service";
 import { CreateCategoryDto } from "./dtos/create-category.dto";
 import { UpdateCategoryDto } from "./dtos/update-category.dto";
@@ -20,6 +21,7 @@ export class CategoryController {
     return this.categoryService.create(createCategoryDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.categoryService.findAll();
