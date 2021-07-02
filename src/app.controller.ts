@@ -47,4 +47,15 @@ export class AppController {
   getHTML() {
     return "<html><h1>Hello World</h1></html>";
   }
+
+  @Public()
+  @Get("admin/bank-info")
+  getAdminBankInfo() {
+    return {
+      bankName: "Vietcombank - CN TPHCM",
+      accountNumber: "0071000873564",
+      accountName: "NGUYEN VAN NINH",
+      transferContent: "NTSHOPI7CBM5AHOH",
+    };
+  }
 }
