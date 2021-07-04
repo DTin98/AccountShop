@@ -112,21 +112,13 @@ export class ProductService {
       .lean()
       .exec();
 
-    this.paymentModel
-      .updateOne(
-        {},
-        {
-          describe: describe,
-          categoryName: category["name"],
-          owner: userId,
-          quantity: quantity,
-          $push: {
-            products: [...foundProducts.map((p) => p._id)],
-          },
-        },
-        { upsert: true }
-      )
-      .exec();
+    new this.paymentModel({
+      describe: describe,
+      categoryName: category["name"],
+      owner: userId,
+      quantity: quantity,
+      products: [...foundProducts.map((p) => p._id)],
+    }).save();
 
     return foundProducts;
   }
