@@ -12,7 +12,6 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 import { Product } from "src/product/schemas/product.schema";
 import { Category } from "src/category/schemas/category.schema";
-import { CategoryCountry } from "./category-country.schema";
 
 export type CountryDocument = Country & Document;
 
@@ -41,7 +40,7 @@ export class Country {
   product: Product[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Category" })
-  category: Category;
+  category: Category | string;
 }
 
 export const CountrySchema = SchemaFactory.createForClass(Country);

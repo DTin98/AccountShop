@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req } from "@nestjs/common";
 import { AuthService } from "./auth/auth.service";
 import { LoginUserDto } from "./auth/dtos/login-user.dto";
 import { RegisterUserDto } from "./auth/dtos/register-user.dto";
@@ -9,10 +9,15 @@ import { ApiProperty, ApiResponse } from "@nestjs/swagger";
 import { LoginResponse } from "./auth/interfaces/login-response.interface";
 import { User } from "./users/schemas/user.schema";
 import { RegisterResponse } from "./auth/interfaces/register-response.interface";
+import { AppService } from "./app.service";
+import { AdminBankInfo } from "./shared/interfaces/admin-bank-info.interface";
 
 @Controller()
 export class AppController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private appService: AppService
+  ) {}
 
   @Public()
   @Post("auth/login")
@@ -48,14 +53,9 @@ export class AppController {
     return "<html><h1>Hello World</h1></html>";
   }
 
-  @Public()
   @Get("admin/bank-info")
-  getAdminBankInfo() {
-    return {
-      bankName: "Vietcombank - CN TPHCM",
-      accountNumber: "0071000873564",
-      accountName: "NGUYEN VAN NINH",
-      transferContent: "NTSHOPI7CBM5AHOH",
-    };
+  getAdminBankInfo(@Req() req): Promise<AdminBankInfo> {
+    const { userId } = req.user;
+    return this.appService.getAdminBankInfo(userId);
   }
 }

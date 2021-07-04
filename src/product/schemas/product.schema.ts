@@ -12,6 +12,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Category } from "src/category/schemas/category.schema";
 import { Exclude } from "class-transformer";
 import { Country } from "src/country/schemas/country.schema";
+import { User } from "src/users/schemas/user.schema";
 
 export type ProductDocument = Product & Document;
 
@@ -21,13 +22,13 @@ export class Product {
   data: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Country" })
-  country: Country;
+  country: Country | string;
 
   @Prop({ default: true })
   @Exclude()
   publish: boolean;
 
-  @Prop({ default: false })
+  @Prop({ default: false, index: 1 })
   @Exclude()
   isUsed: boolean;
 }

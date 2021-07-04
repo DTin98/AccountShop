@@ -8,8 +8,11 @@ import { APP_GUARD } from "@nestjs/core";
 import { JwtAuthGuard } from "./shared/guards/jwt-auth.guard";
 import { RolesGuard } from "./shared/guards/roles.guard";
 import { ProductModule } from "./product/product.module";
-import { CategoryModule } from './category/category.module';
-import { CountryModule } from './country/country.module';
+import { CategoryModule } from "./category/category.module";
+import { CountryModule } from "./country/country.module";
+import { PaymentModule } from "./payment/payment.module";
+import { UsersService } from "./users/users.service";
+import { UserSchema } from "./users/schemas/user.schema";
 
 @Module({
   imports: [
@@ -22,6 +25,7 @@ import { CountryModule } from './country/country.module';
     ProductModule,
     CategoryModule,
     CountryModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [

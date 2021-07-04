@@ -2,10 +2,15 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { ValidationPipe } from "./shared/pipes/validation.pipe";
+import * as morgan from "morgan";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+    logger: true,
+  });
   app.useGlobalPipes(new ValidationPipe());
+  app.use(morgan("tiny"));
 
   const config = new DocumentBuilder()
     .setTitle("Account Shop")

@@ -1,5 +1,5 @@
 export interface PaginateResult<T> {
   data: Array<T>;
-  total: number;
+  totalPage: number;
   page: number;
 }

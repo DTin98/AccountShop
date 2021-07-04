@@ -11,16 +11,12 @@ import {
 import { ApiProperty } from "@nestjs/swagger";
 import { Product } from "src/product/schemas/product.schema";
 import { Country, CountryDocument } from "src/country/schemas/country.schema";
-import { CategoryCountry } from "src/country/schemas/category-country.schema";
 
 export type CategoryDocument = Category & Document;
 @Schema()
 export class Category {
   @Prop({ require: true })
   name: string;
-
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Country" })
-  Country: Country[];
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);
