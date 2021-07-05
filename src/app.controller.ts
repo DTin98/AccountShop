@@ -23,6 +23,7 @@ import { RegisterResponse } from "./auth/interfaces/register-response.interface"
 import { AppService } from "./app.service";
 import { AdminBankInfo } from "./shared/interfaces/admin-bank-info.interface";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { UpdateAdminBankInfoDto } from "./shared/dtos/update-admin-bank-info.dto";
 
 @Controller()
 export class AppController {
@@ -61,9 +62,8 @@ export class AppController {
 
   @Public()
   @Get("html")
-  @Render("header")
   getHTML() {
-    return { title: "header" };
+    return this.appService.getHTML();
   }
 
   @Put("html")
@@ -75,7 +75,13 @@ export class AppController {
 
   @Get("admin/bank-info")
   getAdminBankInfo(@Req() req): Promise<AdminBankInfo> {
-    const { userId } = req.user;
-    return this.appService.getAdminBankInfo(userId);
+    const { username } = req.user;
+    return this.appService.getAdminBankInfo(username);
+  }
+
+  @Put("admin/bank-info")
+  @Roles(Role.Admin)
+  updateAdminBankInfo(@Body() updateAdminBankInfoDto: UpdateAdminBankInfoDto) {
+    return this.appService.updateAdminBankInfo(updateAdminBankInfoDto);
   }
 }
