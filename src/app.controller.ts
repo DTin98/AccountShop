@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Post, Req } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Put,
+  Render,
+  Req,
+  UploadedFile,
+  UseInterceptors,
+} from "@nestjs/common";
 import { AuthService } from "./auth/auth.service";
 import { LoginUserDto } from "./auth/dtos/login-user.dto";
 import { RegisterUserDto } from "./auth/dtos/register-user.dto";
@@ -11,6 +22,7 @@ import { User } from "./users/schemas/user.schema";
 import { RegisterResponse } from "./auth/interfaces/register-response.interface";
 import { AppService } from "./app.service";
 import { AdminBankInfo } from "./shared/interfaces/admin-bank-info.interface";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @Controller()
 export class AppController {
@@ -49,8 +61,16 @@ export class AppController {
 
   @Public()
   @Get("html")
+  @Render("header")
   getHTML() {
-    return "<html><h1>Hello World</h1></html>";
+    return { title: "header" };
+  }
+
+  @Put("html")
+  @Roles(Role.Admin)
+  @UseInterceptors(FileInterceptor("file"))
+  updateHTML(@UploadedFile() file: Express.Multer.File): string {
+    return this.appService.updateHTML(file.buffer.toString());
   }
 
   @Get("admin/bank-info")

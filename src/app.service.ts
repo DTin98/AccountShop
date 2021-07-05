@@ -1,6 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { AdminBankInfo } from "./shared/interfaces/admin-bank-info.interface";
 import { UsersService } from "./users/users.service";
+import * as fs from "fs";
+import { join } from "path";
 @Injectable()
 export class AppService {
   constructor(private userService: UsersService) {}
@@ -17,5 +19,18 @@ export class AppService {
       accountName: "NGUYEN VAN NINH",
       transferContent: transferContent,
     };
+  }
+
+  updateHTML(content: string): string {
+    fs.writeFile(
+      join(__dirname, "..", "views" + "/header.hbs"),
+      content,
+      (err) => {
+        if (err) throw err;
+        console.log("Successfully Written to File.");
+      }
+    );
+
+    return content;
   }
 }

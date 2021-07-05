@@ -3,14 +3,19 @@ import { AppModule } from "./app.module";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { ValidationPipe } from "./shared/pipes/validation.pipe";
 import * as morgan from "morgan";
+import { join } from "path";
+import { NestExpressApplication } from "@nestjs/platform-express";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true,
     logger: true,
   });
   app.useGlobalPipes(new ValidationPipe());
   app.use(morgan("tiny"));
+  app.useStaticAssets(join(__dirname, "..", "public"));
+  app.setBaseViewsDir(join(__dirname, "..", "views"));
+  app.setViewEngine("hbs");
 
   const config = new DocumentBuilder()
     .setTitle("Account Shop")
