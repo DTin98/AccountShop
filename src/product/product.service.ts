@@ -38,7 +38,6 @@ export class ProductService {
     return createdProduct.save();
   }
 
-  //NOT YET INSERT OPTION FOR QUERIES
   async findAll(filter: ProductFilterDto): Promise<PaginateResult<Product>> {
     const { pageSize, page, skip } = getFilterQueries(filter);
 

@@ -4,6 +4,7 @@ import { UsersService } from "./users/users.service";
 import * as fs from "fs";
 import { join } from "path";
 import { UpdateAdminBankInfoDto } from "./shared/dtos/update-admin-bank-info.dto";
+import { UpdateHeaderHTMLDto } from "./shared/dtos/update-header-html.dto";
 @Injectable()
 export class AppService {
   constructor(private userService: UsersService) {}
@@ -40,22 +41,22 @@ export class AppService {
     return contents.toString();
   }
 
-  updateHTML(content: string): string {
+  updateHTML(updateHeaderHTMLDto: UpdateHeaderHTMLDto): string {
     try {
       fs.writeFileSync(
-        join(__dirname, "shared/constants" + "/header.html"),
-        content
+        join(__dirname, "..", "public", "header.html"),
+        updateHeaderHTMLDto.file
       );
     } catch (error) {
       throw error;
     }
-    return content;
+    return updateHeaderHTMLDto.file;
   }
 
   updateAdminBankInfo(updateAdminBankInfoDto: UpdateAdminBankInfoDto) {
     try {
       fs.writeFileSync(
-        join(__dirname, "shared/constants" + "/adminBankInfo.json"),
+        join(__dirname, "..", "public", "adminBankInfo.json"),
         JSON.stringify(updateAdminBankInfoDto)
       );
     } catch (error) {

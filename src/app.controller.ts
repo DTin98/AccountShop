@@ -24,6 +24,7 @@ import { AppService } from "./app.service";
 import { AdminBankInfo } from "./shared/interfaces/admin-bank-info.interface";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { UpdateAdminBankInfoDto } from "./shared/dtos/update-admin-bank-info.dto";
+import { UpdateHeaderHTMLDto } from "./shared/dtos/update-header-html.dto";
 
 @Controller()
 export class AppController {
@@ -68,9 +69,9 @@ export class AppController {
 
   @Put("html")
   @Roles(Role.Admin)
-  @UseInterceptors(FileInterceptor("file"))
-  updateHTML(@UploadedFile() file: Express.Multer.File): string {
-    return this.appService.updateHTML(file.buffer.toString());
+  // @UseInterceptors(FileInterceptor("file"))
+  updateHTML(@Body() updateHeaderHTMLDto: UpdateHeaderHTMLDto): string {
+    return this.appService.updateHTML(updateHeaderHTMLDto);
   }
 
   @Get("admin/bank-info")
