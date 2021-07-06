@@ -16,7 +16,7 @@ export class AppService {
     let adminBankInfo;
     try {
       adminBankInfo = fs.readFileSync(
-        join(__dirname, "shared/constants" + "/adminBankInfo.json")
+        join(__dirname, "..", "public", "adminBankInfo.json")
       );
     } catch (error) {
       throw error;
@@ -32,7 +32,7 @@ export class AppService {
     let contents;
     try {
       contents = fs.readFileSync(
-        join(__dirname, "shared/constants" + "/header.html")
+        join(__dirname, "..", "public", "header.html")
       );
     } catch (error) {
       throw error;
