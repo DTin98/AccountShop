@@ -3,6 +3,7 @@ import { Document } from "mongoose";
 import { IsNotEmpty, IsEmail, IsString, IsNumber } from "class-validator";
 import { Role } from "src/users/enums/role.enum";
 import { ApiProperty } from "@nestjs/swagger";
+import { Transform } from "class-transformer";
 
 export type UserDocument = User & Document;
 
@@ -14,34 +15,29 @@ export class User {
   @Prop({ require: true })
   @IsNotEmpty()
   @IsEmail()
-  @ApiProperty({ example: "abc@gmail.com", description: "The email of user" })
   email: string;
 
   @Prop({ require: true })
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ example: "abc", description: "The username of user" })
   username: string;
 
   @Prop({ require: true })
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({
-    example: "0986114478",
-    description: "The phone number of user",
-  })
   phone: string;
 
   @Prop({ default: 0 })
   @IsNotEmpty()
   @IsNumber()
+  @Transform((balance) => parseInt(balance.value))
   balance: number;
 
   @Prop({ require: true })
   @IsNotEmpty()
   password: string;
 
-  @Prop({ default: [Role.User] })
+  @Prop({ require: true, default: [Role.User] })
   role: Role[];
 
   @Prop({ default: false })

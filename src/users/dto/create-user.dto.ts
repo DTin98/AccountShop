@@ -1,4 +1,24 @@
-import { OmitType } from '@nestjs/mapped-types';
-import { User } from '../schemas/user.schema';
+import { IsNotEmpty, IsString } from "class-validator";
+import { Role } from "../enums/role.enum";
 
-export class CreateUserDto extends OmitType(User, ['balance'] as const) {}
+export class CreateUserDto {
+  @IsNotEmpty()
+  @IsString()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  username: string;
+
+  @IsNotEmpty()
+  @IsString()
+  phone: string;
+
+  @IsNotEmpty()
+  @IsString()
+  balance: number;
+
+  @IsNotEmpty()
+  @IsString()
+  role: string;
+}

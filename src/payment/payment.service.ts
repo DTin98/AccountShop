@@ -3,9 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { PaginateResult } from "src/shared/interfaces/paginate-result.interface";
 import { getFilterQueries } from "src/utils/getFilterQueries";
-import { CreatePaymentDto } from "./dtos/create-payment.dto";
-import { PaymentFilterDto } from "./dtos/filter-payment.dto";
-import { UpdatePaymentDto } from "./dtos/update-payment.dto";
+import { FilterPaymentDto } from "./dtos/filter-payment.dto";
 import { Payment, PaymentDocument } from "./schemas/payment.schema";
 
 @Injectable()
@@ -16,7 +14,7 @@ export class PaymentService {
 
   async findAll(
     userId: string,
-    filter: PaymentFilterDto
+    filter: FilterPaymentDto
   ): Promise<PaginateResult<Payment>> {
     const { pageSize, page, skip } = getFilterQueries(filter);
 

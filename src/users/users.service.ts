@@ -1,10 +1,15 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { getRandomString } from "src/utils/getRandomString";
+import { PaginateResult } from "src/shared/interfaces/paginate-result.interface";
+import { getFilterQueries } from "src/utils/getFilterQueries";
+import * as _ from "lodash";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { FilterUserDto } from "./dto/user-filter.dto";
 import { User, UserDocument } from "./schemas/user.schema";
+import { AddUserMoneyDto } from "./dto/add-user-money.dto";
+import { CutUserMoneyDto } from "./dto/cut-user-money.dto";
 
 @Injectable()
 export class UsersService {
@@ -20,42 +25,82 @@ export class UsersService {
     if (isExistedUser.length > 0)
       throw new BadRequestException("username is existed");
 
-    const users = await this.userModel.find().lean().exec();
-    for (let i = 0; i < users.length; i++) {
-      await this.userModel.updateOne(
-        { _id: users[i]._id },
-        { $set: { transferContent: "NTSHOP" + getRandomString(10, []) } }
-      );
-    }
-    const skipLst = isExistedUser.map((u) => u.transferContent || "");
-    const transferContent = getRandomString(10, skipLst);
     const createdUser = new this.userModel({
       ...createUserDto,
-      transferContent: "NTSHOP" + transferContent,
+      transferContent: createUserDto.username,
     });
     return createdUser.save();
   }
 
-  findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+  async findAll(filter: FilterUserDto): Promise<PaginateResult<User>> {
+    const { pageSize, page, skip } = getFilterQueries(filter);
+
+    const userCount = await this.userModel.countDocuments().exec();
+
+    const userLst = await this.userModel
+      .find(_.omit(filter, ["page_size", "page"]))
+      .limit(pageSize)
+      .skip(skip)
+      .exec();
+
+    return {
+      data: userLst,
+      totalPage: Math.ceil(userCount / pageSize),
+      page,
+    };
+  }
+
+  async addMoney(
+    userId: string,
+    addUserMoneyDto: AddUserMoneyDto
+  ): Promise<User> {
+    const existedUser = await this.userModel
+      .findOne({
+        _id: userId,
+      })
+      .lean()
+      .exec();
+    if (!existedUser) throw new BadRequestException("user is not found");
+
+    const updatedUser = await this.userModel.updateOne(
+      { _id: userId },
+      { $inc: { balance: addUserMoneyDto.addMoney } },
+      { new: true }
+    );
+    return this.userModel.findOne({ _id: userId });
+  }
+
+  async cutMoney(
+    userId: string,
+    cutUserMoneyDto: CutUserMoneyDto
+  ): Promise<User> {
+    const existedUser = await this.userModel
+      .findOne({
+        _id: userId,
+      })
+      .lean()
+      .exec();
+    if (!existedUser) throw new BadRequestException("user is not found");
+
+    const updatedUser = await this.userModel.updateOne(
+      { _id: userId },
+      { $inc: { balance: -cutUserMoneyDto.cutMoney } },
+      { new: true }
+    );
+    return this.userModel.findOne({ _id: userId });
   }
 
   findOne(username: string): Promise<User> {
     return this.userModel.findOne({ username }).exec();
   }
 
-  update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  patch(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const updatedUser = this.userModel.findByIdAndUpdate(
       { _id: id },
       { $set: { ...updateUserDto } },
       { new: true }
     );
     return updatedUser.exec();
-  }
-
-  remove(id: string): Promise<User> {
-    const removedUser = this.userModel.findOneAndRemove({ _id: id });
-    return removedUser.exec();
   }
 
   async getTransferContent(userId: string): Promise<string> {

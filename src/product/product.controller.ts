@@ -14,7 +14,7 @@ import {
 import { PaginateResult } from "src/shared/interfaces/paginate-result.interface";
 import { ProductService as ProductService } from "./product.service";
 import { CreateProductDto } from "./dtos/create-product.dto";
-import { ProductFilterDto } from "./dtos/filter-product.dto";
+import { FilterProductDto } from "./dtos/filter-product.dto";
 import { UpdateProductDto } from "./dtos/update-product.dto";
 import { Product } from "./schemas/product.schema";
 import { Public } from "src/shared/decorators/public.decorator";
@@ -26,7 +26,7 @@ export class ProductController {
 
   @Public()
   @Get()
-  findAll(@Query() filter: ProductFilterDto): Promise<PaginateResult<Product>> {
+  findAll(@Query() filter: FilterProductDto): Promise<PaginateResult<Product>> {
     return this.productService.findAll(filter);
   }
 

@@ -6,9 +6,9 @@ import { Public } from "./shared/decorators/public.decorator";
 import { Roles } from "./shared/decorators/role.decorator";
 import { Role } from "./users/enums/role.enum";
 import { ApiProperty, ApiResponse } from "@nestjs/swagger";
-import { LoginResponse } from "./auth/interfaces/login-response.interface";
+import { LoginResult } from "./auth/interfaces/login-result.interface";
 import { User } from "./users/schemas/user.schema";
-import { RegisterResponse } from "./auth/interfaces/register-response.interface";
+import { RegisterResult } from "./auth/interfaces/register-result.interface";
 import { AppService } from "./app.service";
 import { AdminBankInfo } from "./shared/interfaces/admin-bank-info.interface";
 
@@ -23,10 +23,10 @@ export class AppController {
   @Post("auth/login")
   @ApiResponse({
     status: 200,
-    type: LoginResponse,
+    type: LoginResult,
     description: "Creates new token",
   })
-  async login(@Body() loginUserDto: LoginUserDto): Promise<LoginResponse> {
+  async login(@Body() loginUserDto: LoginUserDto): Promise<LoginResult> {
     return this.authService.login(loginUserDto);
   }
 
@@ -34,7 +34,7 @@ export class AppController {
   @Post("auth/register")
   @ApiResponse({
     status: 201,
-    type: RegisterResponse,
+    type: RegisterResult,
     description: "Creates new user",
   })
   async register(@Body() registerUserDto: RegisterUserDto) {

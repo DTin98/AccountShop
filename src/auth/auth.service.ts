@@ -1,16 +1,16 @@
-import * as bcrypt from 'bcrypt';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
-import { LoginUserDto } from './dtos/login-user.dto';
-import { RegisterUserDto } from './dtos/register-user.dto';
-import { saltOrRoundsConstants } from './constants';
+import * as bcrypt from "bcrypt";
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { UsersService } from "../users/users.service";
+import { LoginUserDto } from "./dtos/login-user.dto";
+import { RegisterUserDto } from "./dtos/register-user.dto";
+import { saltOrRoundsConstants } from "./constants";
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService,
+    private jwtService: JwtService
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -26,7 +26,7 @@ export class AuthService {
   async login(loginUserDto: LoginUserDto) {
     const validatedUser = await this.validateUser(
       loginUserDto.username,
-      loginUserDto.password,
+      loginUserDto.password
     );
     if (validatedUser) {
       const payload = {
@@ -38,13 +38,13 @@ export class AuthService {
         user: validatedUser,
       };
     }
-    throw new BadRequestException('username or password is wrong');
+    throw new BadRequestException("username or password is wrong");
   }
 
   async register(registerUserDto: RegisterUserDto) {
     const hash = await bcrypt.hash(
       registerUserDto.password,
-      saltOrRoundsConstants,
+      saltOrRoundsConstants
     );
     const user = { ...registerUserDto, password: hash };
     const createdUser = await this.usersService.create(user);

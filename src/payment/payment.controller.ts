@@ -1,20 +1,6 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Req,
-  UseInterceptors,
-  ClassSerializerInterceptor,
-  Query,
-} from "@nestjs/common";
+import { Controller, Get, Req, Query } from "@nestjs/common";
 import { PaymentService } from "./payment.service";
-import { CreatePaymentDto } from "./dtos/create-payment.dto";
-import { UpdatePaymentDto } from "./dtos/update-payment.dto";
-import { PaymentFilterDto } from "./dtos/filter-payment.dto";
+import { FilterPaymentDto } from "./dtos/filter-payment.dto";
 import { Payment } from "./schemas/payment.schema";
 import { PaginateResult } from "src/shared/interfaces/paginate-result.interface";
 
@@ -25,7 +11,7 @@ export class PaymentController {
   @Get("histories")
   findAll(
     @Req() req,
-    @Query() filter: PaymentFilterDto
+    @Query() filter: FilterPaymentDto
   ): Promise<PaginateResult<Payment>> {
     const { userId } = req.user;
     return this.paymentService.findAll(userId, filter);

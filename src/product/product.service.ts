@@ -12,7 +12,7 @@ import { User, UserDocument } from "src/users/schemas/user.schema";
 import { getFilterQueries } from "src/utils/getFilterQueries";
 import { BuyProductsDto } from "./dtos/buy-products.dto";
 import { CreateProductDto } from "./dtos/create-product.dto";
-import { ProductFilterDto } from "./dtos/filter-product.dto";
+import { FilterProductDto } from "./dtos/filter-product.dto";
 import { UpdateProductDto } from "./dtos/update-product.dto";
 import { Product, ProductDocument } from "./schemas/product.schema";
 import { Country, CountryDocument } from "src/country/schemas/country.schema";
@@ -38,8 +38,7 @@ export class ProductService {
     return createdProduct.save();
   }
 
-  //NOT YET INSERT OPTION FOR QUERIES
-  async findAll(filter: ProductFilterDto): Promise<PaginateResult<Product>> {
+  async findAll(filter: FilterProductDto): Promise<PaginateResult<Product>> {
     const { pageSize, page, skip } = getFilterQueries(filter);
 
     const productCount = await this.productModel.countDocuments().exec();

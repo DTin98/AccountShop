@@ -18,6 +18,11 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { MailerService } from "@nestjs-modules/mailer";
 import { User } from "./schemas/user.schema";
 import { ApiBearerAuth, ApiResponse } from "@nestjs/swagger";
+import { FilterUserDto } from "./dto/user-filter.dto";
+import { AddUserMoneyDto } from "./dto/add-user-money.dto";
+import { CutUserMoneyDto } from "./dto/cut-user-money.dto";
+import { Roles, ROLES_KEY } from "src/shared/decorators/role.decorator";
+import { Role } from "./enums/role.enum";
 
 @Controller("users")
 export class UsersController {
@@ -47,7 +52,7 @@ export class UsersController {
     if (!user.email) throw new BadRequestException("user have not email");
     if (user.isVerified) throw new BadRequestException("user is actived");
     if (code === user.verificationCode)
-      return this.userService.update(user._id, {
+      return this.userService.patch(user._id, {
         isVerified: true,
         verificationCode: null,
       });
@@ -61,7 +66,7 @@ export class UsersController {
     if (!user) throw new BadRequestException("user is not found");
     if (!user.email) throw new BadRequestException("user have not email");
     const code = Math.floor(Math.random() * 999999);
-    const updatedUser = await this.userService.update(user._id, {
+    const updatedUser = await this.userService.patch(user._id, {
       verificationCode: code,
     });
     this.mailerService
@@ -80,8 +85,27 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Roles(Role.Admin)
+  findAll(@Query() filter: FilterUserDto) {
+    return this.userService.findAll(filter);
+  }
+
+  @Post(":id/add-money/")
+  @Roles(Role.Admin)
+  addMoney(
+    @Param("id") userId: string,
+    @Body() addUserMoneyDto: AddUserMoneyDto
+  ): Promise<User> {
+    return this.userService.addMoney(userId, addUserMoneyDto);
+  }
+
+  @Post(":id/cut-money")
+  @Roles(Role.Admin)
+  cutMoney(
+    @Param("id") userId: string,
+    @Body() cutUserMoneyDto: CutUserMoneyDto
+  ): Promise<User> {
+    return this.userService.cutMoney(userId, cutUserMoneyDto);
   }
 
   @Get(":id")
@@ -91,11 +115,6 @@ export class UsersController {
 
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
-  }
-
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.userService.remove(id);
+    return this.userService.patch(id, updateUserDto);
   }
 }

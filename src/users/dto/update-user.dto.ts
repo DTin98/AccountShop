@@ -1,5 +1,11 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { User } from '../schemas/user.schema';
-import { CreateUserDto } from './create-user.dto';
+import { PartialType } from "@nestjs/mapped-types";
+import { OmitType } from "@nestjs/swagger";
+import { Role } from "../enums/role.enum";
+import { CreateUserDto } from "./create-user.dto";
 
-export class UpdateUserDto extends PartialType(User) {}
+export class UpdateUserDto extends PartialType(
+  OmitType(CreateUserDto, ["role"])
+) {
+  isVerified?: boolean;
+  verificationCode?: number;
+}

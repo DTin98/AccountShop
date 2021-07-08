@@ -7,12 +7,14 @@ export class CreatePaymentDto {
   @IsNumber()
   quantity: number;
 
-  @IsString()
-  amount: string;
+  @IsNumber()
+  amount: number;
 
   @IsNotEmpty()
-  products: Product[];
-
   @IsMongoId()
-  user: User;
+  products: string;
+
+  @IsNotEmpty()
+  @IsMongoId()
+  user: string;
 }
