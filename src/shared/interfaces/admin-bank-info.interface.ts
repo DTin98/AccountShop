@@ -1,6 +1,6 @@
 export interface AdminBankInfo {
-  bankName: "Vietcombank - CN TPHCM";
-  accountNumber: "0071000873564";
-  accountName: "NGUYEN VAN NINH";
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
   transferContent: string;
 }

@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Post, Req } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Put,
+  Render,
+  Req,
+  UploadedFile,
+  UseInterceptors,
+} from "@nestjs/common";
 import { AuthService } from "./auth/auth.service";
 import { LoginUserDto } from "./auth/dtos/login-user.dto";
 import { RegisterUserDto } from "./auth/dtos/register-user.dto";
@@ -11,6 +22,9 @@ import { User } from "./users/schemas/user.schema";
 import { RegisterResult } from "./auth/interfaces/register-result.interface";
 import { AppService } from "./app.service";
 import { AdminBankInfo } from "./shared/interfaces/admin-bank-info.interface";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { UpdateAdminBankInfoDto } from "./shared/dtos/update-admin-bank-info.dto";
+import { UpdateHeaderHTMLDto } from "./shared/dtos/update-header-html.dto";
 
 @Controller()
 export class AppController {
@@ -50,12 +64,25 @@ export class AppController {
   @Public()
   @Get("html")
   getHTML() {
-    return "<html><h1>Hello World</h1></html>";
+    return this.appService.getHTML();
+  }
+
+  @Put("html")
+  @Roles(Role.Admin)
+  // @UseInterceptors(FileInterceptor("file"))
+  updateHTML(@Body() updateHeaderHTMLDto: UpdateHeaderHTMLDto): string {
+    return this.appService.updateHTML(updateHeaderHTMLDto);
   }
 
   @Get("admin/bank-info")
   getAdminBankInfo(@Req() req): Promise<AdminBankInfo> {
-    const { userId } = req.user;
-    return this.appService.getAdminBankInfo(userId);
+    const { username } = req.user;
+    return this.appService.getAdminBankInfo(username);
+  }
+
+  @Put("admin/bank-info")
+  @Roles(Role.Admin)
+  updateAdminBankInfo(@Body() updateAdminBankInfoDto: UpdateAdminBankInfoDto) {
+    return this.appService.updateAdminBankInfo(updateAdminBankInfoDto);
   }
 }

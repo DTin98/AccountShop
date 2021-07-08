@@ -19,8 +19,8 @@ export class Payment {
   @Prop({ require: true })
   quantity: number;
 
-  @Prop({ require: true })
-  amount: string;
+  @Prop({ require: true, default: 0 })
+  totalAmount: number;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }] })
   products: Product[];

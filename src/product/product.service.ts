@@ -115,6 +115,7 @@ export class ProductService {
       describe: describe,
       categoryName: category["name"],
       owner: userId,
+      totalAmount: totalAmount,
       quantity: quantity,
       products: [...foundProducts.map((p) => p._id)],
     }).save();
