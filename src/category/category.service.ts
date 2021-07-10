@@ -24,4 +24,11 @@ export class CategoryService {
   findAll(): Promise<Category[]> {
     return this.categoryModel.find().exec();
   }
+
+  async delete(id: string): Promise<Category> {
+    const category = await this.categoryModel.findOne({ _id: id });
+    if (!category) throw new BadRequestException("Category is not found");
+    const deletedCategory = await this.categoryModel.deleteOne({ _id: id });
+    return category;
+  }
 }

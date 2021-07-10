@@ -4,16 +4,23 @@ import { Model } from "mongoose";
 import { PaginateResult } from "src/shared/interfaces/paginate-result.interface";
 import { getFilterQueries } from "src/utils/getFilterQueries";
 import * as _ from "lodash";
+import * as bcrypt from "bcrypt";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { FilterUserDto } from "./dto/user-filter.dto";
 import { User, UserDocument } from "./schemas/user.schema";
 import { AddUserMoneyDto } from "./dto/add-user-money.dto";
 import { CutUserMoneyDto } from "./dto/cut-user-money.dto";
+import { getRandomString } from "src/utils/getRandomString";
+import { saltOrRoundsConstants } from "src/auth/constants";
+import { MailerService } from "@nestjs-modules/mailer";
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private mailerService: MailerService
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const isExistedUser = await this.userModel
@@ -109,5 +116,35 @@ export class UsersService {
       .lean()
       .exec();
     return content.transferContent;
+  }
+
+  async resetPassword(userId: string): Promise<User> {
+    const user = await this.userModel.findOne({ _id: userId });
+    if (!user) throw new BadRequestException("user is not found");
+    if (!user.email) throw new BadRequestException("user have not email");
+    const newPassword = getRandomString(6);
+    const hash = await bcrypt.hash(newPassword, saltOrRoundsConstants);
+    const updatedUser = await this.userModel.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          password: hash,
+        },
+      }
+    );
+    this.mailerService
+      .sendMail({
+        to: `${user.email}`,
+        from: "kaisin1505@gmail.com", // Senders email address
+        subject: "NTShop reset password", // Subject line
+        html: `<b>This is your new password: ${newPassword}</b>`, // HTML body content
+      })
+      .then((success) => {
+        console.log(success);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    return this.userModel.findOne({ userId });
   }
 }

@@ -117,4 +117,10 @@ export class UsersController {
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.patch(id, updateUserDto);
   }
+
+  @Patch(":id/reset-password")
+  @Roles(Role.Admin)
+  resetPassword(@Param("id") id: string): Promise<User> {
+    return this.userService.resetPassword(id);
+  }
 }
