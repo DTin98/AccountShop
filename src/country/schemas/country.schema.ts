@@ -24,6 +24,9 @@ export class Country {
   @Prop({ default: 0 })
   quality: number;
 
+  @Prop({ default: true })
+  isPublished: boolean;
+
   @Prop()
   describe: string;
 

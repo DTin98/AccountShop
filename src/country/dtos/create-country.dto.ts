@@ -1,5 +1,12 @@
 import { Transform } from "class-transformer";
-import { IsString, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsBoolean,
+  IsMongoId,
+} from "class-validator";
 
 export class CreateCountryDto {
   @IsNotEmpty()
@@ -22,4 +29,11 @@ export class CreateCountryDto {
   @IsOptional()
   @IsString()
   describe: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isPublished: boolean;
+
+  @IsMongoId()
+  category: string;
 }
