@@ -17,6 +17,7 @@ import { UpdateProductDto } from "./dtos/update-product.dto";
 import { Product, ProductDocument } from "./schemas/product.schema";
 import { Country, CountryDocument } from "src/country/schemas/country.schema";
 import { Payment, PaymentDocument } from "src/payment/schemas/payment.schema";
+import { CountryService } from "src/country/country.service";
 
 @Injectable()
 export class ProductService {
@@ -24,7 +25,8 @@ export class ProductService {
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     @InjectModel(Country.name) private countryModel: Model<CountryDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    @InjectModel(Payment.name) private paymentModel: Model<PaymentDocument>
+    @InjectModel(Payment.name) private paymentModel: Model<PaymentDocument>,
+    private countryService: CountryService
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
@@ -35,6 +37,7 @@ export class ProductService {
       throw new BadRequestException("product's data is existed");
 
     const createdProduct = new this.productModel(createProductDto);
+    await this.countryService.updateQuantity(createProductDto.country);
     return createdProduct.save();
   }
 
@@ -121,5 +124,31 @@ export class ProductService {
     }).save();
 
     return foundProducts;
+  }
+
+  async createProductsByFile(countryId: string, file: Express.Multer.File) {
+    let count = 0;
+    let j = 0;
+    let createData = () => {
+      return new Promise(async (resolve, reject) => {
+        try {
+          for (let i = 0; i < file.size; i++) {
+            if (file.buffer[i] === Buffer.from("\n")[0]) {
+              const data = file.buffer.slice(j, i).toString();
+              if (data) {
+                await this.create({ data: data, country: countryId });
+                count++;
+              }
+              j = i + 1;
+            }
+          }
+        } catch (e) {
+          reject(e);
+        }
+        resolve(true);
+      });
+    };
+    await createData();
+    await this.countryService.updateQuantity(countryId);
   }
 }

@@ -9,6 +9,7 @@ import {
 import { User, UserSchema } from "src/users/schemas/user.schema";
 import { Country, CountrySchema } from "src/country/schemas/country.schema";
 import { Payment, PaymentSchema } from "src/payment/schemas/payment.schema";
+import { CountryService } from "src/country/country.service";
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { Payment, PaymentSchema } from "src/payment/schemas/payment.schema";
     MongooseModule.forFeature([{ name: Payment.name, schema: PaymentSchema }]),
   ],
   controllers: [ProductController],
-  providers: [ProductService],
+  providers: [ProductService, CountryService],
 })
 export class ProductModule {}

@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+import { Product, ProductDocument } from "src/product/schemas/product.schema";
 import { PaginateResult } from "src/shared/interfaces/paginate-result.interface";
 import { getFilterQueries } from "src/utils/getFilterQueries";
 import { CreateCountryDto } from "./dtos/create-country.dto";
@@ -10,7 +11,8 @@ import { Country, CountryDocument } from "./schemas/country.schema";
 @Injectable()
 export class CountryService {
   constructor(
-    @InjectModel(Country.name) private countryModel: Model<CountryDocument>
+    @InjectModel(Country.name) private countryModel: Model<CountryDocument>,
+    @InjectModel(Product.name) private productModel: Model<ProductDocument>
   ) {}
 
   async create(createCountryDto: CreateCountryDto) {
@@ -43,10 +45,29 @@ export class CountryService {
       .skip(skip)
       .exec();
 
+    // const quantity = await this.productModel
+    //   .count({ country: "60dcc12eaf248a451fcc2a5e" })
+    //   .select("_id")
+    //   .exec();
+
+    // const countryData = countryLst.map((c) => {
+    //   return { ...c.toJSON(), quantity: quantity };
+    // });
+
     return {
       data: countryLst,
       totalPage: Math.ceil(countryCount / pageSize),
       page,
     };
+  }
+
+  async updateQuantity(id: string): Promise<Country> {
+    const quantity = await this.productModel
+      .count({ country: id })
+      .select("_id")
+      .exec();
+
+    await this.countryModel.updateOne({ _id: id }, { quantity: quantity });
+    return this.countryModel.findOne({ _id: id });
   }
 }

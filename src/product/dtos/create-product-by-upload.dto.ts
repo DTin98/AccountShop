@@ -1,10 +1,6 @@
 import { IsMongoId, IsNotEmpty, IsString } from "class-validator";
 
-export class CreateProductDto {
-  @IsNotEmpty()
-  @IsString()
-  data: string;
-
+export class CreateProductByUploadDto {
   @IsNotEmpty()
   @IsMongoId()
   country: string;

@@ -22,7 +22,7 @@ export class Country {
   unitPrice: number;
 
   @Prop({ default: 0 })
-  quality: number;
+  quantity: number;
 
   @Prop({ default: true })
   isPublished: boolean;
