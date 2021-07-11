@@ -6,6 +6,7 @@ import { PaginateResult } from "src/shared/interfaces/paginate-result.interface"
 import { getFilterQueries } from "src/utils/getFilterQueries";
 import { CreateCountryDto } from "./dtos/create-country.dto";
 import { FilterCountryDto } from "./dtos/filter-country.dto";
+import { UpdateCountryDto } from "./dtos/update-country.dto";
 import { Country, CountryDocument } from "./schemas/country.schema";
 
 @Injectable()
@@ -77,5 +78,19 @@ export class CountryService {
       throw new BadRequestException("country id " + id + " is not found");
     await this.countryModel.deleteOne({ _id: id });
     return foundCountry;
+  }
+
+  async patch(
+    id: string,
+    updateCountryDto: UpdateCountryDto
+  ): Promise<Country> {
+    const foundCountry = await this.countryModel.findOne({ _id: id });
+    if (!foundCountry)
+      throw new BadRequestException("country id " + id + " is not found");
+    await this.countryModel.updateOne(
+      { _id: id },
+      { $set: { ...updateCountryDto } }
+    );
+    return this.countryModel.findOne({ _id: id });
   }
 }
