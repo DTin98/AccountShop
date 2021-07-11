@@ -30,9 +30,12 @@ export class ProductService {
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
-    const isExistedProduct = await this.productModel.findOne({
-      data: createProductDto.data,
-    });
+    const isExistedProduct = await this.productModel
+      .findOne({
+        data: createProductDto.data,
+      })
+      .lean()
+      .exec();
     if (isExistedProduct)
       throw new BadRequestException("product's data is existed");
 
@@ -108,6 +111,10 @@ export class ProductService {
       .lean()
       .exec();
 
+    const updatedCountryQuantity = await this.countryService.updateQuantity(
+      country
+    );
+
     const afterBalance = userBalance - totalAmount;
     const updatedUserBalance = await this.userModel
       .updateMany({ _id: userId }, { balance: afterBalance })
@@ -129,26 +136,20 @@ export class ProductService {
   async createProductsByFile(countryId: string, file: Express.Multer.File) {
     let count = 0;
     let j = 0;
-    let createData = () => {
-      return new Promise(async (resolve, reject) => {
-        try {
-          for (let i = 0; i < file.size; i++) {
-            if (file.buffer[i] === Buffer.from("\n")[0]) {
-              const data = file.buffer.slice(j, i).toString();
-              if (data) {
-                await this.create({ data: data, country: countryId });
-                count++;
-              }
-              j = i + 1;
-            }
-          }
-        } catch (e) {
-          reject(e);
+    let manyData = [];
+    for (let i = 0; i < file.size; i++) {
+      if (file.buffer[i] === Buffer.from("\n")[0]) {
+        const data = file.buffer.slice(j, i).toString();
+        if (data) {
+          manyData.push({ data: data });
+          count++;
         }
-        resolve(true);
-      });
-    };
-    await createData();
-    await this.countryService.updateQuantity(countryId);
+        j = i + 1;
+      }
+    }
+    console.log(manyData.length);
+    this.productModel.insertMany(manyData);
+    this.countryService.updateQuantity(countryId);
+    return { ok: true };
   }
 }
