@@ -70,4 +70,12 @@ export class CountryService {
     await this.countryModel.updateOne({ _id: id }, { quantity: quantity });
     return this.countryModel.findOne({ _id: id });
   }
+
+  async delete(id: string): Promise<Country> {
+    const foundCountry = await this.countryModel.findOne({ _id: id });
+    if (!foundCountry)
+      throw new BadRequestException("country id " + id + " is not found");
+    await this.countryModel.deleteOne({ _id: id });
+    return foundCountry;
+  }
 }

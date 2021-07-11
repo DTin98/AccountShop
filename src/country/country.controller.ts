@@ -1,6 +1,16 @@
-import { Controller, Get, Post, Body, Query } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Query,
+  Delete,
+  Param,
+} from "@nestjs/common";
 import { Public } from "src/shared/decorators/public.decorator";
+import { Roles } from "src/shared/decorators/role.decorator";
 import { PaginateResult } from "src/shared/interfaces/paginate-result.interface";
+import { Role } from "src/users/enums/role.enum";
 import { CountryService } from "./country.service";
 import { CreateCountryDto } from "./dtos/create-country.dto";
 import { FilterCountryDto } from "./dtos/filter-country.dto";
@@ -19,5 +29,11 @@ export class CountryController {
   @Get()
   findAll(@Query() filter: FilterCountryDto): Promise<PaginateResult<Country>> {
     return this.countryService.findAll(filter);
+  }
+
+  @Delete(":id")
+  @Roles(Role.Admin)
+  delete(@Param("id") id: string): Promise<Country> {
+    return this.countryService.delete(id);
   }
 }
