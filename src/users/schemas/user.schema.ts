@@ -47,6 +47,9 @@ export class User {
   verificationCode: number;
 
   @Prop({ default: null })
+  apiKey: string;
+
+  @Prop({ default: null })
   transferContent: string;
 }
 

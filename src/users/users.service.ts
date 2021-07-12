@@ -23,18 +23,21 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const isExistedUser = await this.userModel
+    const existedUsers = await this.userModel
       .find({
         username: createUserDto.username,
       })
       .lean()
       .exec();
-    if (isExistedUser.length > 0)
+    if (existedUsers.length > 0)
       throw new BadRequestException("username is existed");
 
+    const skipApiKeys = existedUsers.map((u) => u.apiKey);
+    const apiKey = getRandomString(25, skipApiKeys);
     const createdUser = new this.userModel({
       ...createUserDto,
       transferContent: createUserDto.username,
+      apiKey: apiKey,
     });
     return createdUser.save();
   }
@@ -110,12 +113,9 @@ export class UsersService {
     return updatedUser.exec();
   }
 
-  async getTransferContent(userId: string): Promise<string> {
-    const content = await this.userModel
-      .findById({ _id: userId })
-      .lean()
-      .exec();
-    return content.transferContent;
+  async getApiKey(userId: string): Promise<string> {
+    const user = await this.userModel.findById({ _id: userId }).lean().exec();
+    return user.apiKey;
   }
 
   async resetPassword(userId: string): Promise<User> {

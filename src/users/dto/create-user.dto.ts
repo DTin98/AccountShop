@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { Role } from "../enums/role.enum";
 
 export class CreateUserDto {
@@ -14,11 +14,13 @@ export class CreateUserDto {
   @IsString()
   phone: string;
 
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
-  balance: number;
+  balance?: number;
 
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
-  role: string;
+  role?: string;
 }
