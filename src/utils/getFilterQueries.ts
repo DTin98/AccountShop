@@ -8,9 +8,14 @@ interface IFilter {
 }
 export const getFilterQueries = (filter: FilterDto): IFilter => {
   const page = +filter.page || PAGINATE_DEFAULT.PAGE;
-  const pageSize = +filter.page_size || PAGINATE_DEFAULT.PAGE_SIZE;
+  let pageSize = +filter.page_size || PAGINATE_DEFAULT.PAGE_SIZE;
   let skip = page * pageSize * +(page !== PAGINATE_DEFAULT.PAGE);
   skip = skip > 0 ? skip - pageSize : skip;
+
+  if (page < 0) {
+    pageSize = 0;
+    skip = 0;
+  }
 
   return { pageSize, page, skip };
 };
