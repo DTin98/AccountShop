@@ -141,15 +141,18 @@ export class ProductService {
       if (file.buffer[i] === Buffer.from("\n")[0]) {
         const data = file.buffer.slice(j, i).toString();
         if (data) {
-          manyData.push({ data: data });
+          manyData.push({ data: data, country: countryId });
           count++;
         }
         j = i + 1;
       }
     }
     console.log(manyData.length);
+    await this.countryModel.updateOne(
+      { _id: countryId },
+      { $inc: { quantity: count } }
+    );
     this.productModel.insertMany(manyData);
-    this.countryService.updateQuantity(countryId);
     return { ok: true };
   }
 }

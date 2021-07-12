@@ -64,11 +64,18 @@ export class CountryService {
 
   async updateQuantity(id: string): Promise<Country> {
     const quantity = await this.productModel
-      .count({ country: id })
+      .countDocuments({ country: id })
       .select("_id")
       .exec();
+    console.log(
+      "🚀 ~ file: country.service.ts ~ line 70 ~ CountryService ~ updateQuantity ~ quantity",
+      quantity
+    );
 
-    await this.countryModel.updateOne({ _id: id }, { quantity: quantity });
+    await this.countryModel.updateOne(
+      { _id: id },
+      { $set: { quantity: quantity } }
+    );
     return this.countryModel.findOne({ _id: id });
   }
 
