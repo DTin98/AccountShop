@@ -100,8 +100,10 @@ export class UsersService {
     return this.userModel.findOne({ _id: userId });
   }
 
-  findOne(username: string): Promise<User> {
-    return this.userModel.findOne({ username }).exec();
+  async findOne(username: string): Promise<User> {
+    const user = await this.userModel.findOne({ username }).exec();
+    if (!user) throw new BadRequestException("user is not found");
+    return user;
   }
 
   patch(id: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -113,9 +115,13 @@ export class UsersService {
     return updatedUser.exec();
   }
 
-  async getApiKey(userId: string): Promise<string> {
+  async getApiKey(userId: string): Promise<any> {
     const user = await this.userModel.findById({ _id: userId }).lean().exec();
-    return user.apiKey;
+    console.log(
+      "🚀 ~ file: users.service.ts ~ line 118 ~ UsersService ~ getApiKey ~ user",
+      user
+    );
+    return { apiKey: user.apiKey || null };
   }
 
   async resetPassword(userId: string): Promise<User> {
@@ -146,5 +152,10 @@ export class UsersService {
         console.log(err);
       });
     return this.userModel.findOne({ userId });
+  }
+
+  async findApiKey(apiKey: string): Promise<User> {
+    const user = await this.userModel.findOne({ apiKey: apiKey });
+    return user;
   }
 }

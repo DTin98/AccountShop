@@ -11,6 +11,8 @@ import {
   Options,
   BadRequestException,
   ParseIntPipe,
+  Res,
+  Req,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -59,7 +61,7 @@ export class UsersController {
     else throw new BadRequestException("code is wrong");
   }
 
-  @Get("/verify/resend-email")
+  @Get("verify/resend-email")
   @ApiBearerAuth()
   async verifyResend(@Request() req) {
     const user = await this.userService.findOne(req.user.username);
@@ -106,6 +108,12 @@ export class UsersController {
     @Body() cutUserMoneyDto: CutUserMoneyDto
   ): Promise<User> {
     return this.userService.cutMoney(userId, cutUserMoneyDto);
+  }
+
+  @Get("api-key")
+  getApiKey(@Req() req) {
+    const { userId } = req.user;
+    return this.userService.getApiKey(userId);
   }
 
   @Get(":id")

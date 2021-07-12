@@ -67,10 +67,6 @@ export class CountryService {
       .countDocuments({ country: id })
       .select("_id")
       .exec();
-    console.log(
-      "🚀 ~ file: country.service.ts ~ line 70 ~ CountryService ~ updateQuantity ~ quantity",
-      quantity
-    );
 
     await this.countryModel.updateOne(
       { _id: id },
