@@ -12,7 +12,7 @@ export const getFilterQueries = (filter: FilterDto): IFilter => {
   let skip = page * pageSize * +(page !== PAGINATE_DEFAULT.PAGE);
   skip = skip > 0 ? skip - pageSize : skip;
 
-  if (page < 0) {
+  if (!filter.page) {
     pageSize = 0;
     skip = 0;
   }
