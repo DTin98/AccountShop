@@ -18,16 +18,17 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, "..", "public"));
   app.setBaseViewsDir(join(__dirname, "..", "views"));
   app.setViewEngine("hbs");
+  app.setGlobalPrefix("api");
 
-  const config = new DocumentBuilder()
-    .setTitle("Account Shop")
-    .setDescription("The Account Shop API description")
-    .setVersion("1.0")
-    .addTag("accountShop")
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("", app, document);
+  // const config = new DocumentBuilder()
+  //   .setTitle("Account Shop")
+  //   .setDescription("The Account Shop API description")
+  //   .setVersion("1.0")
+  //   .addTag("accountShop")
+  //   .addBearerAuth()
+  //   .build();
+  // const document = SwaggerModule.createDocument(app, config);
+  // SwaggerModule.setup("", app, document);
 
   await app.listen(8080);
 }
