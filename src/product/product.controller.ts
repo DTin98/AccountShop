@@ -39,13 +39,16 @@ export class ProductController {
     return this.productService.create(createProductDto);
   }
 
-  @Public()
   @Post("buy")
   @HttpCode(HttpStatus.OK)
   buyProducts(
     @Req() req,
     @Body() buyProductsDto: BuyProductsDto
   ): Promise<Product[]> {
+    console.log(
+      "🚀 ~ file: product.controller.ts ~ line 49 ~ ProductController ~ req.user",
+      req.user
+    );
     const { userId } = req.user;
     return this.productService.buyProducts(userId, buyProductsDto);
   }
