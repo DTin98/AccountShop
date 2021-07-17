@@ -168,4 +168,9 @@ export class UsersService {
       });
     return this.userModel.findOne({ userId });
   }
+
+  async findApiKey(apiKey: string): Promise<User> {
+    const user = await this.userModel.findOne({ apiKey: apiKey });
+    return user;
+  }
 }

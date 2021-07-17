@@ -39,6 +39,7 @@ export class ProductController {
     return this.productService.create(createProductDto);
   }
 
+  @Public()
   @Post("buy")
   @HttpCode(HttpStatus.OK)
   buyProducts(
