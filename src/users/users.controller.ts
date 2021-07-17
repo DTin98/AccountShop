@@ -11,6 +11,7 @@ import {
   Options,
   BadRequestException,
   ParseIntPipe,
+  Req,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -59,7 +60,7 @@ export class UsersController {
     else throw new BadRequestException("code is wrong");
   }
 
-  @Get("/verify/resend-email")
+  @Get("verify/resend-email")
   @ApiBearerAuth()
   async verifyResend(@Request() req) {
     const user = await this.userService.findOne(req.user.username);
@@ -84,10 +85,27 @@ export class UsersController {
       });
   }
 
+  @Get("me")
+  getMe(@Req() req) {
+    const { userId } = req.user;
+    return this.userService.getMe(userId);
+  }
+
+  @Get("api-key")
+  getApiKey(@Req() req) {
+    const { userId } = req.user;
+    return this.userService.getApiKey(userId);
+  }
+
   @Get()
   @Roles(Role.Admin)
   findAll(@Query() filter: FilterUserDto) {
     return this.userService.findAll(filter);
+  }
+
+  @Get(":id")
+  findOne(@Param("id") id: string) {
+    return this.userService.findOne(id);
   }
 
   @Post(":id/add-money/")
@@ -106,11 +124,6 @@ export class UsersController {
     @Body() cutUserMoneyDto: CutUserMoneyDto
   ): Promise<User> {
     return this.userService.cutMoney(userId, cutUserMoneyDto);
-  }
-
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.userService.findOne(id);
   }
 
   @Patch(":id")

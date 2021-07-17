@@ -26,6 +26,7 @@ export class PaymentService {
       .select("-owner")
       .limit(pageSize)
       .skip(skip)
+      .sort({ createdAt: "DESC" })
       .exec();
 
     return {

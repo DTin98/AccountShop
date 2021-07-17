@@ -13,13 +13,18 @@ import { CountryModule } from "./country/country.module";
 import { PaymentModule } from "./payment/payment.module";
 import { UsersService } from "./users/users.service";
 import { UserSchema } from "./users/schemas/user.schema";
+import { ThrottlerModule } from "@nestjs/throttler";
 
 @Module({
   imports: [
     MongooseModule.forRoot(
-      "mongodb+srv://admin:Mothaiba45sau@codebasecluster0.nsoaj.mongodb.net/AccountShop",
+      "mongodb://admin:%5D5hLxZ47S%2a%7B%21F8%21oDatabase@207.148.71.119:27017/shopDB?authSource=admin",
       { useFindAndModify: false }
     ),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
     UsersModule,
     AuthModule,
     ProductModule,

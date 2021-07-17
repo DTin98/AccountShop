@@ -22,6 +22,15 @@ export class UsersService {
     private mailerService: MailerService
   ) {}
 
+  async getMe(userId: string): Promise<User> {
+    const user = await this.userModel
+      .findOne({ _id: userId })
+      .select("-apiKey -verificationCode -password")
+      .exec();
+    if (!user) throw new BadRequestException("user is not found");
+    return user;
+  }
+
   async create(createUserDto: CreateUserDto): Promise<User> {
     const existedUsers = await this.userModel
       .find({
@@ -31,6 +40,14 @@ export class UsersService {
       .exec();
     if (existedUsers.length > 0)
       throw new BadRequestException("username is existed");
+
+    const existedEmail = await this.userModel
+      .findOne({
+        username: createUserDto.username,
+      })
+      .lean()
+      .exec();
+    if (existedEmail) throw new BadRequestException("email is existed");
 
     const skipApiKeys = existedUsers.map((u) => u.apiKey);
     const apiKey = getRandomString(25, skipApiKeys);
@@ -100,8 +117,10 @@ export class UsersService {
     return this.userModel.findOne({ _id: userId });
   }
 
-  findOne(username: string): Promise<User> {
-    return this.userModel.findOne({ username }).exec();
+  async findOne(username: string): Promise<User> {
+    const user = await this.userModel.findOne({ username }).exec();
+    if (!user) throw new BadRequestException("user is not found");
+    return user;
   }
 
   patch(id: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -113,9 +132,11 @@ export class UsersService {
     return updatedUser.exec();
   }
 
-  async getApiKey(userId: string): Promise<string> {
+  async getApiKey(userId: string) {
     const user = await this.userModel.findById({ _id: userId }).lean().exec();
-    return user.apiKey;
+    return {
+      apiKey: user.apiKey,
+    };
   }
 
   async resetPassword(userId: string): Promise<User> {

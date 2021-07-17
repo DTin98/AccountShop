@@ -3,6 +3,7 @@ import { AppModule } from "./app.module";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { ValidationPipe } from "./shared/pipes/validation.pipe";
 import * as morgan from "morgan";
+import * as helmet from "helmet";
 import { join } from "path";
 import { NestExpressApplication } from "@nestjs/platform-express";
 
@@ -11,6 +12,7 @@ async function bootstrap() {
     cors: true,
     logger: true,
   });
+  app.use(helmet());
   app.useGlobalPipes(new ValidationPipe());
   app.use(morgan("tiny"));
   app.useStaticAssets(join(__dirname, "..", "public"));
