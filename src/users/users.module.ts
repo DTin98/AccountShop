@@ -13,8 +13,8 @@ import { MailerModule } from "@nestjs-modules/mailer";
         service: "gmail",
         host: "smtp.gmail.com",
         auth: {
-          user: "kaisin1505@gmail.com", // generated ethereal user
-          pass: "aaaa1111AA",
+          user: "system.hotmail24h@gmail.com",
+          pass: "Admin@1234",
         },
       },
     }),

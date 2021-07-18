@@ -74,8 +74,8 @@ export class UsersController {
       .sendMail({
         to: `${user.email}`,
         from: "kaisin1505@gmail.com", // Senders email address
-        subject: "HelloWorld", // Subject line
-        html: `<b>This is your code: ${code}</b>`, // HTML body content
+        subject: "Kích hoạt tài khoản", // Subject line
+        html: `<b>Mã kích hoạt tài khoản của bạn là: ${code}</b>`, // HTML body content
       })
       .then((success) => {
         console.log(success);

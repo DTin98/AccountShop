@@ -157,8 +157,8 @@ export class UsersService {
       .sendMail({
         to: `${user.email}`,
         from: "kaisin1505@gmail.com", // Senders email address
-        subject: "NTShop reset password", // Subject line
-        html: `<b>This is your new password: ${newPassword}</b>`, // HTML body content
+        subject: "Mật khẩu mới", // Subject line
+        html: `<b>Mật khẩu mới của bạn là: ${newPassword}</b>`, // HTML body content
       })
       .then((success) => {
         console.log(success);
