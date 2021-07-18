@@ -43,7 +43,7 @@ export class UsersService {
 
     const existedEmail = await this.userModel
       .findOne({
-        username: createUserDto.username,
+        email: createUserDto.email,
       })
       .lean()
       .exec();
