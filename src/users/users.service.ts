@@ -170,6 +170,7 @@ export class UsersService {
   }
 
   async findApiKey(apiKey: string): Promise<User> {
+    if (!apiKey) return null;
     const user = await this.userModel.findOne({ apiKey: apiKey });
     return user;
   }

@@ -12,6 +12,9 @@ import {
   HttpStatus,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
+  BadRequestException,
+  ForbiddenException,
 } from "@nestjs/common";
 import { PaginateResult } from "src/shared/interfaces/paginate-result.interface";
 import { ProductService as ProductService } from "./product.service";
@@ -23,10 +26,15 @@ import { Public } from "src/shared/decorators/public.decorator";
 import { BuyProductsDto } from "./dtos/buy-products.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { CreateProductByUploadDto } from "./dtos/create-product-by-upload.dto";
+import { apiKeyGuard } from "src/shared/guards/api-key.guard";
+import { UsersService } from "src/users/users.service";
 
 @Controller("product")
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly userService: UsersService
+  ) {}
 
   @Public()
   @Get()
@@ -39,16 +47,25 @@ export class ProductController {
     return this.productService.create(createProductDto);
   }
 
+  @Post("customer/buy")
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  async buyProductsByApiKey(
+    @Req() req,
+    @Query("api_key") apiKey: string,
+    @Body() buyProductsDto: BuyProductsDto
+  ): Promise<Product[]> {
+    const user = await this.userService.findApiKey(apiKey);
+    if (!user) throw new ForbiddenException("Forbidden");
+    return this.productService.buyProducts(user._id, buyProductsDto);
+  }
+
   @Post("buy")
   @HttpCode(HttpStatus.OK)
-  buyProducts(
+  async buyProducts(
     @Req() req,
     @Body() buyProductsDto: BuyProductsDto
   ): Promise<Product[]> {
-    console.log(
-      "🚀 ~ file: product.controller.ts ~ line 49 ~ ProductController ~ req.user",
-      req.user
-    );
     const { userId } = req.user;
     return this.productService.buyProducts(userId, buyProductsDto);
   }

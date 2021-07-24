@@ -18,7 +18,7 @@ import { ThrottlerModule } from "@nestjs/throttler";
 @Module({
   imports: [
     MongooseModule.forRoot(
-      "mongodb://admin:%5D5hLxZ47S%2a%7B%21F8%21oDatabase@207.148.71.119:27017/shopDB?authSource=admin",
+      "mongodb+srv://admin:Mothaiba45sau@codebasecluster0.nsoaj.mongodb.net/shopDB",
       { useFindAndModify: false }
     ),
     ThrottlerModule.forRoot({
